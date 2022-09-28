@@ -14,7 +14,10 @@ import FooterVue from './components/Footer/Footer.vue'
 
 export default {
   name: 'AppVue',
-  components: { HeaderVue, FooterVue }
+  components: { HeaderVue, FooterVue },
+  mounted() {
+    this.$store.dispatch('categoryList')
+  }
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="type-nav">
-    <div class="container">
-      <h2 class="all">全部商品分类</h2>
+    <div class="container" @mouseleave="leaveShow">
+      <h2 class="all" @mouseenter="enterShow">全部商品分类</h2>
       <nav class="nav">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
@@ -12,40 +12,42 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2" @click="goSearch">
-          <div
-            class="item"
-            v-for="(c1, index) in categoryList"
-            :key="c1.categoryId"
-            :class="{ cur: currentIndex == index }"
-          >
-            <h3 @mouseover="changeIndex(index)" @mouseout="currentIndex = -1">
-              <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{
-                c1.categoryName
-              }}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
-                <dl class="fore">
-                  <dt>
-                    <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{
-                      c2.categoryName
-                    }}</a>
-                  </dt>
-                  <dd>
-                    <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                      <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{
-                        c3.categoryName
+      <transition name="sort">
+        <div class="sort" v-show="show">
+          <div class="all-sort-list2" @click="goSearch">
+            <div
+              class="item"
+              v-for="(c1, index) in categoryList"
+              :key="c1.categoryId"
+              :class="{ cur: currentIndex == index }"
+            >
+              <h3 @mouseenter="changeIndex(index)">
+                <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{
+                  c1.categoryName
+                }}</a>
+              </h3>
+              <div class="item-list clearfix">
+                <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
+                  <dl class="fore">
+                    <dt>
+                      <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{
+                        c2.categoryName
                       }}</a>
-                    </em>
-                  </dd>
-                </dl>
+                    </dt>
+                    <dd>
+                      <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                        <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{
+                          c3.categoryName
+                        }}</a>
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -58,11 +60,15 @@ export default {
   name: 'TypeNavVue',
   data() {
     return {
-      currentIndex: -1
+      currentIndex: -1,
+      show: true
     }
   },
-  mounted() {
-    this.$store.dispatch('categoryList')
+  mounted() {},
+  created() {
+    if (this.$route.path != '/home') {
+      this.show = false
+    }
   },
   computed: {
     ...mapState({
@@ -85,9 +91,22 @@ export default {
         } else if (category3id) {
           query.category3Id = category3id
         }
-        location.query = query
 
-        this.$router.push(location)
+        if (this.$route.params) {
+          location.query = query
+          location.params = this.$route.params
+
+          this.$router.push(location)
+        }
+      }
+    },
+    enterShow() {
+      this.show = true
+    },
+    leaveShow() {
+      this.currentIndex = -1
+      if (this.$route.path != '/home') {
+        this.show = false
       }
     }
   }
@@ -130,11 +149,14 @@ export default {
       left: 0;
       top: 45px;
       width: 210px;
-      height: 461px;
+      height: 480px;
       position: absolute;
       background: #fafafa;
       z-index: 999;
-
+      overflow: hidden;
+      &:hover {
+        overflow: visible;
+      }
       .all-sort-list2 {
         .item {
           h3 {
@@ -214,6 +236,25 @@ export default {
           background-color: aquamarine;
         }
       }
+    }
+
+    .sort-enter {
+      height: 0;
+    }
+    .sort-enter-to {
+      height: 480px;
+    }
+    .sort-enter-active {
+      transition: all 0.2s linear;
+    }
+    .sort-leave {
+      height: 480px;
+    }
+    .sort-leave-to {
+      height: 0;
+    }
+    .sort-leave-active {
+      transition: all 0.2s linear;
     }
   }
 }

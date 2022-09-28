@@ -58,11 +58,13 @@ export default {
   },
   methods: {
     toSearch() {
-      this.$router.push({
-        name: 'search',
-        params: { keyword: this.keyword || undefined },
-        query: { k: this.keyword.toUpperCase() }
-      })
+      if (this.$route.query) {
+        this.$router.push({
+          name: 'search',
+          params: { keyword: this.keyword || undefined },
+          query: this.$route.query
+        })
+      }
     }
   }
 }

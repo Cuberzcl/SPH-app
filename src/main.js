@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import TypeNavVue from '@/components/TypeNav/TypeNav.vue'
 import store from '@/store/store.js'
+import '@/mock/mockServer'
 // import { reqCategoryList } from '@/api'
 // reqCategoryList()
 Vue.config.productionTip = false
