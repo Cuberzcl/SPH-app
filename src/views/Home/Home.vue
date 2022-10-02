@@ -5,8 +5,7 @@
     <recommend-vue></recommend-vue>
     <rank-vue></rank-vue>
     <like-vue></like-vue>
-    <floor-vue></floor-vue>
-    <floor-vue></floor-vue>
+    <floor-vue v-for="floor in floorList" :key="floor.id" :list="floor"></floor-vue>
   </div>
 </template>
 
@@ -16,6 +15,7 @@ import RecommendVue from '@/views/Home/Recommend/Recommend.vue'
 import RankVue from '@/views/Home/Rank/Rank.vue'
 import LikeVue from '@/views/Home/Like/Like.vue'
 import FloorVue from '@/views/Home/Floor/Floor.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'HomeVue',
@@ -25,6 +25,14 @@ export default {
     RankVue,
     LikeVue,
     FloorVue
+  },
+  mounted() {
+    this.$store.dispatch('getFloorList')
+  },
+  computed: {
+    ...mapState({
+      floorList: state => state.home.floorList
+    })
   }
 }
 </script>
